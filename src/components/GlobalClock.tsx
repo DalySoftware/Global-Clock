@@ -31,7 +31,7 @@ const GlobalClock = () => {
                     },
                 })}
                 tabBarOptions={{
-                    activeTintColor: ColorPalette.test1,
+                    activeTintColor: ColorPalette.accentPrimary,
                     style: styles.tabBar,
                     showLabel: false,
                 }}

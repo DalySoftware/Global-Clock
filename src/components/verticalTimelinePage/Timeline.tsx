@@ -3,7 +3,7 @@ import { FC } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Spacetime } from "spacetime";
 import ColorPalette from "../utils/ColorPalette";
-import TimeSlot from "./TimeSlot";
+import TimelineSlot from "./TimelineSlot";
 
 const roundToHalfHour = (time: Spacetime) => {
     if (time.minute() < 15) return time.minute(0);
@@ -17,23 +17,23 @@ const renderNotches = (
     maxTime: Spacetime,
 ) => {
     let currentTime = roundToHalfHour(minTime.clone());
-    let notches = [];
+    let slots = [];
 
     while (
         currentTime.isBefore(roundToHalfHour(maxTime).add(1, "millisecond"))
     ) {
-        let notch = (
-            <TimeSlot
+        let slot = (
+            <TimelineSlot
                 displayTime={currentTime}
-                key={currentTime.format("{iso}") as string}
+                key={`${currentTime.format("{iso}")}, ${currentTime.tz}`}
             />
         );
 
-        notches.push(notch);
+        slots.push(slot);
         currentTime = currentTime.add(increment, "minute");
     }
 
-    return notches;
+    return slots;
 };
 
 const renderTimezone = (
@@ -76,10 +76,7 @@ const Timeline: FC<TimelineProps> = ({
             <View style={styles.timelineHeaderContainer}>
                 {dates.map((date, index) => {
                     return (
-                        <Text
-                            style={styles.timelineHeader}
-                            key={date.format("{iso}") as string}
-                        >
+                        <Text style={styles.timelineHeader} key={date.tz}>
                             {shortTimezone(date)}
                         </Text>
                     );
@@ -92,10 +89,7 @@ const Timeline: FC<TimelineProps> = ({
                 <View style={styles.scrollContent}>
                     {dates.map((date, index) => {
                         return (
-                            <View
-                                style={styles.timezone}
-                                key={date.format("{iso}") as string}
-                            >
+                            <View style={styles.timezone} key={date.tz}>
                                 {renderTimezone(
                                     date,
                                     increment,
@@ -119,6 +113,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: ColorPalette.backgroundLight,
         borderRadius: 10,
+        borderColor: ColorPalette.accentPrimary,
+        borderWidth: 1,
     },
 
     scrollContent: {
@@ -133,7 +129,7 @@ const styles = StyleSheet.create({
     timelineHeaderContainer: {
         justifyContent: "space-around",
         flexDirection: "row",
-        borderBottomColor: ColorPalette.test1,
+        borderBottomColor: ColorPalette.accentPrimary,
         borderBottomWidth: 1,
         paddingBottom: 5,
     },

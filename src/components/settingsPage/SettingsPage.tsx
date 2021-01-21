@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import spacetime from "spacetime";
 import Card from "../Card";
 import ColorPalette from "../utils/ColorPalette";
@@ -152,7 +152,6 @@ const SettingsPage: FC = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Settings</Text>
-
             <Card style={styles.timezonesContainer}>
                 {renderTimezoneItems()}
             </Card>
@@ -161,7 +160,7 @@ const SettingsPage: FC = () => {
                 onPress={() => {
                     setAddModalVisible(true);
                 }}
-                color={ColorPalette.test1}
+                color={ColorPalette.accentPrimary}
             />
 
             <Text>{spacetime.now().timezones[0]}</Text>
@@ -192,8 +191,9 @@ const styles = StyleSheet.create({
 
     timezonesContainer: {
         marginVertical: 20,
+        paddingVertical: 10,
         backgroundColor: ColorPalette.backgroundLight,
-        borderColor: ColorPalette.test1,
+        borderColor: ColorPalette.accentPrimary,
         borderWidth: 1,
     },
 

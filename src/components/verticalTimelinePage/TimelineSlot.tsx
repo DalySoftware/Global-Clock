@@ -3,7 +3,11 @@ import { StyleSheet, Text, View } from "react-native";
 import { Spacetime } from "spacetime";
 import ColorPalette from "../utils/ColorPalette";
 
-const TimeSlot = ({ displayTime }: { displayTime: Spacetime }): JSX.Element => {
+const TimelineSlot = ({
+    displayTime,
+}: {
+    displayTime: Spacetime;
+}): JSX.Element => {
     return (
         <View style={styles.notchContainer}>
             <View style={styles.notchLine}></View>
@@ -15,7 +19,7 @@ const TimeSlot = ({ displayTime }: { displayTime: Spacetime }): JSX.Element => {
     );
 };
 
-export default TimeSlot;
+export default TimelineSlot;
 
 const styles = StyleSheet.create({
     notchContainer: {
@@ -30,7 +34,7 @@ const styles = StyleSheet.create({
 
     notchLine: {
         flex: 1,
-        backgroundColor: ColorPalette.test1,
+        backgroundColor: ColorPalette.accentSecondary,
         height: 2,
     },
 

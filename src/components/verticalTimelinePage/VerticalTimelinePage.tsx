@@ -55,7 +55,7 @@ const VerticalTimelinePage: FC = () => {
                         <DigitalClockFace
                             time={date}
                             style={styles.clockFace}
-                            key={date.format("{iso}") as string}
+                            key={date.tz}
                         />
                     );
                 })}

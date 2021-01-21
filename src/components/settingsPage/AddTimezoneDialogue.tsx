@@ -51,7 +51,7 @@ const AddTimezoneDialogue = ({
                             style={styles.picker}
                         >
                             <Picker.Item
-                                label="Please select an option..."
+                                label="Please select a timezone..."
                                 value=""
                             />
                             {selectableTimezones.map(renderPickerItem)}
@@ -60,6 +60,7 @@ const AddTimezoneDialogue = ({
                     <Button
                         title="Add timezone"
                         onPress={() => onAddTimezone(selectedTimezoneCode)}
+                        color={ColorPalette.accentPrimary}
                     />
                 </Card>
             </View>
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         flexBasis: "100%",
         flexShrink: 1,
-        borderColor: ColorPalette.test1,
+        borderColor: ColorPalette.accentPrimary,
         borderWidth: 2,
         marginBottom: "10%",
         borderRadius: 10,

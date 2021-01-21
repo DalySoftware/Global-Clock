@@ -1,7 +1,17 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import {
+    Button,
+    Keyboard,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 import ColorPalette from "../utils/ColorPalette";
+
+const iconButtonSize = 25;
 
 const TimezoneItem = ({
     timezoneCode,
@@ -20,16 +30,32 @@ const TimezoneItem = ({
     const [editedDisplayName, setEditedDisplayName] = useState(displayName);
 
     const renderEditOrSaveButton = () => {
-        if (editEnabled) return <Button title="Save" onPress={onSave} />;
-        else
+        if (!dummy && editEnabled)
             return (
-                <Button
-                    title="Edit"
-                    onPress={() => {
-                        setEditEnabled(true);
-                    }}
-                    disabled={dummy}
-                />
+                <View style={styles.buttonContainer}>
+                    <Icon.Button
+                        name="save-outline"
+                        onPress={onSave}
+                        iconStyle={styles.icon}
+                        backgroundColor={ColorPalette.accentPrimary}
+                        size={iconButtonSize}
+                    />
+                </View>
+            );
+        else if (!dummy)
+            return (
+                <View style={styles.buttonContainer}>
+                    <Icon.Button
+                        name="create-outline"
+                        onPress={() => {
+                            setEditEnabled(true);
+                        }}
+                        disabled={dummy}
+                        iconStyle={styles.icon}
+                        backgroundColor={ColorPalette.accentSecondary}
+                        size={iconButtonSize}
+                    />
+                </View>
             );
     };
 
@@ -41,34 +67,81 @@ const TimezoneItem = ({
     const renderText = () => {
         if (editEnabled)
             return (
-                <TextInput
-                    defaultValue={displayName}
-                    blurOnSubmit={true}
-                    clearButtonMode="while-editing"
-                    autoCompleteType="off"
-                    style={styles.text}
-                    onSubmitEditing={onSave}
-                    onChangeText={text => setEditedDisplayName(text)}
-                />
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        defaultValue={displayName}
+                        blurOnSubmit={true}
+                        clearButtonMode={"while-editing"}
+                        autoCompleteType="off"
+                        style={styles.text}
+                        onSubmitEditing={onSave}
+                        onChangeText={text => setEditedDisplayName(text)}
+                        autoFocus={true}
+                        selectTextOnFocus={true}
+                        onBlur={Keyboard.dismiss}
+                    />
+                </View>
             );
-        else return <Text style={styles.text}>{displayName}</Text>;
+        else
+            return (
+                <View style={styles.textContainer}>
+                    <Text style={styles.text}>{displayName}</Text>
+                </View>
+            );
+    };
+
+    const renderReorderButtons = () => {
+        if (!dummy && editEnabled)
+            return (
+                <View style={{ flexDirection: "row" }}>
+                    <View style={styles.buttonContainer}>
+                        <Icon.Button
+                            name="chevron-up-outline"
+                            onPress={() => {}}
+                            disabled={dummy}
+                            iconStyle={styles.icon}
+                            backgroundColor={ColorPalette.accentSecondary}
+                            size={iconButtonSize}
+                        ></Icon.Button>
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <Icon.Button
+                            name="chevron-down-outline"
+                            onPress={() => {}}
+                            disabled={dummy}
+                            iconStyle={styles.icon}
+                            backgroundColor={ColorPalette.accentSecondary}
+                            size={iconButtonSize}
+                        ></Icon.Button>
+                    </View>
+                </View>
+            );
+    };
+
+    const renderDeleteButton = () => {
+        if (!dummy)
+            return (
+                <View style={styles.buttonContainer}>
+                    <Icon.Button
+                        name="trash-outline"
+                        onPress={() => {
+                            onRemoveTimezone(timezoneCode);
+                        }}
+                        disabled={dummy}
+                        iconStyle={styles.icon}
+                        backgroundColor={ColorPalette.accentSecondary}
+                        size={iconButtonSize}
+                    ></Icon.Button>
+                </View>
+            );
     };
 
     return (
         <View style={styles.row}>
-            <View style={styles.textContainer}>{renderText()}</View>
-            <View style={styles.buttonContainer}>
-                {renderEditOrSaveButton()}
-            </View>
-            <View style={styles.buttonContainer}>
-                <Button
-                    title="Delete"
-                    onPress={() => {
-                        onRemoveTimezone(timezoneCode);
-                    }}
-                    disabled={dummy}
-                ></Button>
-            </View>
+            {renderText()}
+            {renderReorderButtons()}
+            {renderEditOrSaveButton()}
+            {renderDeleteButton()}
         </View>
     );
 };
@@ -79,14 +152,26 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
         width: "100%",
-        padding: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        alignItems: "center",
     },
 
     textContainer: {
         flex: 1,
         justifyContent: "center",
-        // height: 50,
-        padding: 10,
+        paddingHorizontal: 10,
+        marginBottom: 1,
+    },
+
+    inputContainer: {
+        flex: 1,
+        justifyContent: "center",
+        marginHorizontal: 5,
+        paddingHorizontal: 5,
+        borderBottomColor: ColorPalette.accentSecondary,
+        borderBottomWidth: 1,
+        // paddingHorizontal: 5,
     },
 
     text: {
@@ -94,6 +179,11 @@ const styles = StyleSheet.create({
     },
 
     buttonContainer: {
-        margin: 5,
+        marginHorizontal: 1,
+    },
+
+    icon: {
+        marginRight: 0,
+        color: ColorPalette.text,
     },
 });
