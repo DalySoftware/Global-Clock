@@ -1,4 +1,4 @@
-import spacetime, { TimezoneSet } from "spacetime";
+import spacetime from "spacetime";
 
 export const validTimezoneCodes = Object.keys(spacetime.now().timezones);
 export default class TimezoneCode {
