@@ -19,12 +19,14 @@ const TimezoneItem = ({
     dummy,
     onRemoveTimezone,
     onSaveDisplayName,
+    onMoveItem,
 }: {
     timezoneCode: string;
     displayName: string;
     dummy: boolean;
     onRemoveTimezone: (timezone: string) => void;
     onSaveDisplayName: (timezoneCode: string, displayName: string) => void;
+    onMoveItem: (timezoneCode: string, moveBy: number) => void;
 }) => {
     const [editEnabled, setEditEnabled] = useState(false);
     const [editedDisplayName, setEditedDisplayName] = useState(displayName);
@@ -34,7 +36,7 @@ const TimezoneItem = ({
             return (
                 <View style={styles.buttonContainer}>
                     <Icon.Button
-                        name="save-outline"
+                        name="lock-closed-outline"
                         onPress={onSave}
                         iconStyle={styles.icon}
                         backgroundColor={ColorPalette.accentPrimary}
@@ -46,7 +48,7 @@ const TimezoneItem = ({
             return (
                 <View style={styles.buttonContainer}>
                     <Icon.Button
-                        name="create-outline"
+                        name="lock-open-outline"
                         onPress={() => {
                             setEditEnabled(true);
                         }}
@@ -97,7 +99,10 @@ const TimezoneItem = ({
                     <View style={styles.buttonContainer}>
                         <Icon.Button
                             name="chevron-up-outline"
-                            onPress={() => {}}
+                            onPress={() => {
+                                onMoveItem(timezoneCode, -1);
+                                // onSave();
+                            }}
                             disabled={dummy}
                             iconStyle={styles.icon}
                             backgroundColor={ColorPalette.accentSecondary}
@@ -107,7 +112,10 @@ const TimezoneItem = ({
                     <View style={styles.buttonContainer}>
                         <Icon.Button
                             name="chevron-down-outline"
-                            onPress={() => {}}
+                            onPress={() => {
+                                onMoveItem(timezoneCode, +1);
+                                // onSave();
+                            }}
                             disabled={dummy}
                             iconStyle={styles.icon}
                             backgroundColor={ColorPalette.accentSecondary}
@@ -119,7 +127,7 @@ const TimezoneItem = ({
     };
 
     const renderDeleteButton = () => {
-        if (!dummy)
+        if (!dummy && editEnabled)
             return (
                 <View style={styles.buttonContainer}>
                     <Icon.Button
@@ -140,8 +148,8 @@ const TimezoneItem = ({
         <View style={styles.row}>
             {renderText()}
             {renderReorderButtons()}
-            {renderEditOrSaveButton()}
             {renderDeleteButton()}
+            {renderEditOrSaveButton()}
         </View>
     );
 };

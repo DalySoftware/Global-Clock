@@ -1,13 +1,13 @@
 import spacetime from "spacetime";
 
-export const validTimezoneCodes = Object.keys(spacetime.now().timezones);
+export const ValidTimezoneCodes = Object.keys(spacetime.now().timezones);
 export default class TimezoneCode {
     code: string;
     offset: number;
     displayName: string;
 
     constructor(code: string) {
-        if (validTimezoneCodes.includes(code)) {
+        if (ValidTimezoneCodes.includes(code)) {
             this.code = code;
             this.offset = spacetime.now(code).timezone().default_offset;
             this.displayName = code;

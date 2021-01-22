@@ -4,7 +4,7 @@ import spacetime from "spacetime";
 import Card from "../Card";
 import ColorPalette from "../utils/ColorPalette";
 import AddTimezoneDialogue from "./AddTimezoneDialogue";
-import TimezoneCode from "../../classes/TimezoneCode";
+import TimezoneCode, { ValidTimezoneCodes } from "../../classes/TimezoneCode";
 import TimezoneItem from "./TimezoneItem";
 import {
     GetEnabledTimezonesStorage,
@@ -24,7 +24,7 @@ const SettingsPage: FC = () => {
         [],
     );
 
-    // Refresh enabled timezones on any state change
+    // Refresh enabled timezones on mount or unmount
     useEffect(() => {
         async function fetchEnabledTimezones() {
             const timezones = await GetEnabledTimezonesStorage();
@@ -33,32 +33,29 @@ const SettingsPage: FC = () => {
         fetchEnabledTimezones();
     }, []);
 
-    // Save enabled timezones to storage if changed
-    useEffect(() => {
-        async function saveEnabledTimezones() {
-            SetEnabledTimezonesStorage(enabledTimezones);
-        }
-        saveEnabledTimezones();
-    }, [enabledTimezones]);
-
     const [selectableTimezones, setSelectableTimezones] = useState<
         TimezoneCode[]
     >([]);
 
-    // Only show timezones in the picker that are not already selected
     useEffect(() => {
+        // Save enabled timezones to storage if changed
+        async function saveEnabledTimezones() {
+            SetEnabledTimezonesStorage(enabledTimezones);
+        }
+        saveEnabledTimezones();
+
+        // Only show timezones in the picker that are not already selected
         const getTimezonePickerItems = () => {
             let returnItems: TimezoneCode[] = [];
             const allTimezones = spacetime.now().timezones;
 
-            for (const timezone in allTimezones) {
-                if (
-                    enabledTimezones.filter(x => x.code == timezone).length == 0
-                ) {
-                    returnItems.push(new TimezoneCode(timezone));
+            ValidTimezoneCodes.forEach((code, index) => {
+                if (enabledTimezones.filter(x => x.code == code).length == 0) {
+                    returnItems.push(new TimezoneCode(code));
                 }
-            }
+            });
 
+            //Sort by offset then code
             returnItems.sort((a, b) => {
                 if (a.offset - b.offset != 0) return a.offset - b.offset;
                 else return a.code.localeCompare(b.code);
@@ -69,12 +66,15 @@ const SettingsPage: FC = () => {
         return () => {};
     }, [enabledTimezones]);
 
+    const onCloseModal = () => {
+        setAddModalVisible(false);
+    };
+
     const addTimeZone = async (timezoneCode: string) => {
         if (timezoneCode) {
             try {
                 const newCode = new TimezoneCode(timezoneCode);
-                const newTimezones = [...enabledTimezones, newCode];
-                setEnabledTimezones(newTimezones);
+                setEnabledTimezones([...enabledTimezones, newCode]);
                 onCloseModal();
             } catch (e) {
                 console.log(
@@ -85,10 +85,6 @@ const SettingsPage: FC = () => {
         }
     };
 
-    const onCloseModal = () => {
-        setAddModalVisible(false);
-    };
-
     const onRemoveTimezone = (timezoneCode: string) => {
         const newTimezones =
             enabledTimezones.length > 0
@@ -97,6 +93,34 @@ const SettingsPage: FC = () => {
                   )
                 : [new TimezoneCode(timezoneCode)];
         setEnabledTimezones(newTimezones);
+    };
+
+    const onMoveTimezone = (timezoneCode: string, moveBy: number) => {
+        const currentIndex = enabledTimezones.findIndex(x => {
+            return x.code == timezoneCode;
+        });
+
+        if (currentIndex >= 0) {
+            if (
+                currentIndex + moveBy >= 0 &&
+                currentIndex + moveBy < enabledTimezones.length
+            ) {
+                const reorderedTimezones = [...enabledTimezones];
+                var elementAtTarget = reorderedTimezones[currentIndex + moveBy];
+                reorderedTimezones.copyWithin(
+                    currentIndex + moveBy,
+                    currentIndex,
+                    currentIndex + 1,
+                );
+                reorderedTimezones[currentIndex] = elementAtTarget;
+                setEnabledTimezones(reorderedTimezones);
+            } else {
+                console.warn("Move would put item out of range", {
+                    currentIndex,
+                    moveBy,
+                });
+            }
+        }
     };
 
     const onSaveDisplayName = (timezoneCode: string, displayName: string) => {
@@ -121,6 +145,7 @@ const SettingsPage: FC = () => {
                         dummy={false}
                         onRemoveTimezone={onRemoveTimezone}
                         onSaveDisplayName={onSaveDisplayName}
+                        onMoveItem={onMoveTimezone}
                     />
                 );
             });
@@ -133,13 +158,17 @@ const SettingsPage: FC = () => {
                     dummy={true}
                     onRemoveTimezone={() => {}}
                     onSaveDisplayName={() => {}}
+                    onMoveItem={() => {}}
                 />
             );
         }
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            style={styles.container}
+            keyboardShouldPersistTaps="handled"
+        >
             <Text style={styles.header}>Settings</Text>
             <Card style={styles.timezonesContainer}>
                 {renderTimezoneItems()}
@@ -159,7 +188,7 @@ const SettingsPage: FC = () => {
                 onAddTimezone={addTimeZone}
                 selectableTimezones={selectableTimezones}
             />
-        </View>
+        </ScrollView>
     );
 };
 
