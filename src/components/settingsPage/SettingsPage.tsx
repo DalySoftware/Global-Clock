@@ -4,9 +4,7 @@ import spacetime from "spacetime";
 import Card from "../Card";
 import ColorPalette from "../utils/ColorPalette";
 import AddTimezoneDialogue from "./AddTimezoneDialogue";
-import ITimezoneCode, {
-    getITimezoneCodeFromString,
-} from "../../interfaces/ITimezoneCode";
+import TimezoneCode from "../../classes/TimezoneCode";
 import TimezoneItem from "./TimezoneItem";
 import {
     GetEnabledTimezonesStorage,
@@ -22,7 +20,7 @@ const getCleanOffset = (timezoneCode: string, offset: number) => {
 
 const SettingsPage: FC = () => {
     const [addModalVisible, setAddModalVisible] = useState(false);
-    const [enabledTimezones, setEnabledTimezones] = useState<ITimezoneCode[]>(
+    const [enabledTimezones, setEnabledTimezones] = useState<TimezoneCode[]>(
         [],
     );
 
@@ -44,27 +42,20 @@ const SettingsPage: FC = () => {
     }, [enabledTimezones]);
 
     const [selectableTimezones, setSelectableTimezones] = useState<
-        ITimezoneCode[]
+        TimezoneCode[]
     >([]);
 
     // Only show timezones in the picker that are not already selected
     useEffect(() => {
         const getTimezonePickerItems = () => {
-            let returnItems: ITimezoneCode[] = [];
+            let returnItems: TimezoneCode[] = [];
             const allTimezones = spacetime.now().timezones;
 
             for (const timezone in allTimezones) {
                 if (
                     enabledTimezones.filter(x => x.code == timezone).length == 0
                 ) {
-                    returnItems.push({
-                        code: timezone,
-                        offset: getCleanOffset(
-                            timezone,
-                            allTimezones[timezone].offset,
-                        ),
-                        displayName: timezone,
-                    });
+                    returnItems.push(new TimezoneCode(timezone));
                 }
             }
 
@@ -81,7 +72,7 @@ const SettingsPage: FC = () => {
     const addTimeZone = async (timezoneCode: string) => {
         if (timezoneCode) {
             try {
-                const newCode = getITimezoneCodeFromString(timezoneCode);
+                const newCode = new TimezoneCode(timezoneCode);
                 const newTimezones = [...enabledTimezones, newCode];
                 setEnabledTimezones(newTimezones);
                 onCloseModal();
@@ -98,15 +89,13 @@ const SettingsPage: FC = () => {
         setAddModalVisible(false);
     };
 
-    const onEditTimezone = () => {};
-
     const onRemoveTimezone = (timezoneCode: string) => {
         const newTimezones =
             enabledTimezones.length > 0
                 ? enabledTimezones.filter(
                       existing => existing.code != timezoneCode,
                   )
-                : [getITimezoneCodeFromString(timezoneCode)];
+                : [new TimezoneCode(timezoneCode)];
         setEnabledTimezones(newTimezones);
     };
 

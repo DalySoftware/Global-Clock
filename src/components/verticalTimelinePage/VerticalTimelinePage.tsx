@@ -7,15 +7,13 @@ import Timeline from "./Timeline";
 import DigitalClockFace from "./DigitalClockFace";
 import { GetEnabledTimezonesStorage } from "../../storage/EnabledTimezonesStorage";
 import { useFocusEffect } from "@react-navigation/native";
-import ITimezoneCode, {
-    getITimezoneCodeFromString,
-} from "../../interfaces/ITimezoneCode";
+import TimezoneCode from "../../classes/TimezoneCode";
 
 const utcCode = "utc/gmt0";
 
 const VerticalTimelinePage: FC = () => {
-    const [enabledTimezones, setEnabledTimezones] = useState<ITimezoneCode[]>([
-        getITimezoneCodeFromString(utcCode),
+    const [enabledTimezones, setEnabledTimezones] = useState<TimezoneCode[]>([
+        new TimezoneCode(utcCode),
     ]);
     const [currentTimeUtc, setCurrentTimeUtc] = useState(
         spacetime.now(utcCode),
@@ -36,7 +34,7 @@ const VerticalTimelinePage: FC = () => {
             const fetchEnabledTimezones = async () => {
                 const timezones = await GetEnabledTimezonesStorage();
                 if (timezones.length > 0) setEnabledTimezones(timezones);
-                else setEnabledTimezones([getITimezoneCodeFromString(utcCode)]);
+                else setEnabledTimezones([new TimezoneCode(utcCode)]);
             };
             fetchEnabledTimezones();
             const clockTimer = setInterval(updateClock, 5000);

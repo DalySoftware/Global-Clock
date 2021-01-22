@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Button, Modal, StyleSheet, Text, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import ITimezoneCode from "../../interfaces/ITimezoneCode";
+import TimezoneCode from "../../classes/TimezoneCode";
 import Card from "../Card";
 import ColorPalette from "../utils/ColorPalette";
 
-const renderPickerItem = (timezone: ITimezoneCode) => {
+const renderPickerItem = (timezone: TimezoneCode) => {
     const formattedOffset: string =
         (timezone.offset < 0 ? "" : "+") + timezone.offset;
 
@@ -27,7 +27,7 @@ const AddTimezoneDialogue = ({
     visible: boolean;
     onClose: () => void;
     onAddTimezone: (timezoneCode: string) => void;
-    selectableTimezones: ITimezoneCode[];
+    selectableTimezones: TimezoneCode[];
 }) => {
     const [selectedTimezoneCode, setSelectedTimezoneCode] = useState("");
 

@@ -1,22 +1,24 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ITimezoneCode from "../interfaces/ITimezoneCode";
+import TimezoneCode from "../classes/TimezoneCode";
 
-export const GetEnabledTimezonesStorage = async (): Promise<ITimezoneCode[]> => {
+export const GetEnabledTimezonesStorage = async (): Promise<TimezoneCode[]> => {
     try {
-        const jsonValue = await AsyncStorage.getItem('@enabledTimezones')
+        const jsonValue = await AsyncStorage.getItem("@enabledTimezones");
 
         if (jsonValue != null) {
             return JSON.parse(jsonValue);
         } else {
-            return []
+            return [];
         }
     } catch (e) {
         console.log("error :>> ", e);
-        return []
+        return [];
     }
-}
+};
 
-export const SetEnabledTimezonesStorage = async (timezoneCodes: ITimezoneCode[]) => {
+export const SetEnabledTimezonesStorage = async (
+    timezoneCodes: TimezoneCode[],
+) => {
     try {
         const json = JSON.stringify(timezoneCodes);
         await AsyncStorage.setItem("@enabledTimezones", json);
@@ -24,4 +26,3 @@ export const SetEnabledTimezonesStorage = async (timezoneCodes: ITimezoneCode[])
         console.log("error :>> ", e);
     }
 };
-
