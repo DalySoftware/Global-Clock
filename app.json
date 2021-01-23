@@ -2,31 +2,32 @@
     "expo": {
         "name": "GlobalClock",
         "slug": "GlobalClock",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "orientation": "portrait",
-        "icon": "./assets/color_logo_with_background.png",
+        "icon": "./assets/global logo.png",
         "splash": {
             "image": "./assets/color_logo_with_background.png",
             "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
+            "backgroundColor": "#4a148c"
         },
         "updates": {
             "fallbackToCacheTimeout": 0
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "bundleidentifier": "com.dalysoftware.globalclock",
             "supportsTablet": false
         },
         "android": {
             "package": "com.dalysoftware.globalclock",
+            "permissions": [],
             "adaptiveIcon": {
-                "foregroundImage": "./assets/color_logo_with_background.png",
+                "foregroundImage": "./assets/global logo.png",
                 "backgroundColor": "#FFFFFF"
-            }
+            },
+            "versionCode": 2
         },
         "web": {
-            "favicon": "./assets/color_logo_with_background.png"
+            "favicon": "./assets/global logo.png"
         },
         "description": "A multi-timezone clock",
         "githubUrl": "https://github.com/IronDoc/Global-Clock"
