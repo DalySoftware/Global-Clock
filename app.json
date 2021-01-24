@@ -4,7 +4,7 @@
         "slug": "GlobalClock",
         "version": "1.0.1",
         "orientation": "portrait",
-        "icon": "./assets/global logo.png",
+        "icon": "./assets/global_logo.png",
         "splash": {
             "image": "./assets/color_logo_with_background.png",
             "resizeMode": "contain",
@@ -21,13 +21,13 @@
             "package": "com.dalysoftware.globalclock",
             "permissions": [],
             "adaptiveIcon": {
-                "foregroundImage": "./assets/global logo.png",
+                "foregroundImage": "./assets/global_logo.png",
                 "backgroundColor": "#FFFFFF"
             },
             "versionCode": 2
         },
         "web": {
-            "favicon": "./assets/global logo.png"
+            "favicon": "./assets/global_logo.png"
         },
         "description": "A multi-timezone clock",
         "githubUrl": "https://github.com/IronDoc/Global-Clock"
